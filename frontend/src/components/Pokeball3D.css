@@ -1,0 +1,216 @@
+/* ========================================
+   POKEBALL 3D ANIMATIONS
+   ======================================== */
+
+.pokeball-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+.pokeball-3d {
+  position: relative;
+  border-radius: 50%;
+  transform-style: preserve-3d;
+  animation: pokeball-spin 2s linear infinite;
+}
+
+/* Tamaños */
+.pokeball-small .pokeball-3d {
+  width: 40px;
+  height: 40px;
+}
+
+.pokeball-medium .pokeball-3d {
+  width: 60px;
+  height: 60px;
+}
+
+.pokeball-large .pokeball-3d {
+  width: 80px;
+  height: 80px;
+}
+
+/* Velocidades */
+.pokeball-slow .pokeball-3d {
+  animation-duration: 3s;
+}
+
+.pokeball-normal .pokeball-3d {
+  animation-duration: 2s;
+}
+
+.pokeball-fast .pokeball-3d {
+  animation-duration: 1s;
+}
+
+/* Hemisferios de la Pokéball */
+.pokeball-hemisphere {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  border-radius: 100% 100% 0 0;
+  overflow: hidden;
+}
+
+.pokeball-top {
+  top: 0;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #dc4444 100%);
+  box-shadow: 
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pokeball-bottom {
+  bottom: 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
+  border-radius: 0 0 100% 100%;
+  box-shadow: 
+    inset 0 2px 4px rgba(255, 255, 255, 0.8),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Highlight en la parte superior */
+.pokeball-highlight {
+  position: absolute;
+  top: 15%;
+  left: 25%;
+  width: 30%;
+  height: 25%;
+  background: radial-gradient(ellipse at center, 
+    rgba(255, 255, 255, 0.8) 0%, 
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%);
+  border-radius: 50%;
+  transform: rotate(-25deg);
+}
+
+/* Sombra en la parte inferior */
+.pokeball-shadow {
+  position: absolute;
+  bottom: 10%;
+  right: 20%;
+  width: 40%;
+  height: 20%;
+  background: radial-gradient(ellipse at center,
+    rgba(0, 0, 0, 0.2) 0%,
+    transparent 70%);
+  border-radius: 50%;
+}
+
+/* Banda central */
+.pokeball-band {
+  position: absolute;
+  top: 45%;
+  left: 0;
+  width: 100%;
+  height: 10%;
+  background: linear-gradient(to bottom,
+    #2c3e50 0%,
+    #34495e  50%,
+    #2c3e50 100%);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  z-index: 10;
+}
+
+/* Centro de la Pokéball */
+.pokeball-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 25%;
+  height: 200%;
+  background: #2c3e50;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Botón central */
+.pokeball-button {
+  width: 70%;
+  height: 35%;
+  background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+  border-radius: 50%;
+  border: 2px solid #34495e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    inset 0 2px 4px rgba(255, 255, 255, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pokeball-button-inner {
+  width: 50%;
+  height: 50%;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  border-radius: 50%;
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2);
+  animation: pokeball-button-pulse 2s ease-in-out infinite;
+}
+
+/* Animaciones */
+@keyframes pokeball-spin {
+  0% {
+    transform: rotateY(0deg) rotateX(0deg);
+  }
+  25% {
+    transform: rotateY(90deg) rotateX(5deg);
+  }
+  50% {
+    transform: rotateY(180deg) rotateX(0deg);
+  }
+  75% {
+    transform: rotateY(270deg) rotateX(-5deg);
+  }
+  100% {
+    transform: rotateY(360deg) rotateX(0deg);
+  }
+}
+
+@keyframes pokeball-button-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 
+      inset 0 1px 2px rgba(255, 255, 255, 0.3),
+      0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 
+      inset 0 1px 2px rgba(255, 255, 255, 0.5),
+      0 2px 6px rgba(52, 152, 219, 0.4);
+  }
+}
+
+/* Efectos adicionales para hover */
+.pokeball-container:hover .pokeball-3d {
+  animation-duration: 0.5s;
+}
+
+.pokeball-container:hover .pokeball-button-inner {
+  animation-duration: 0.5s;
+}
+
+/* Variante flotante */
+.pokeball-floating {
+  animation: pokeball-float 3s ease-in-out infinite;
+}
+
+@keyframes pokeball-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
