@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Pokemon(models.Model):
     """
@@ -76,3 +77,24 @@ class Pokemon(models.Model):
         is_flying = 'flying' in self.types if self.types else False
         is_tall = self.height > 10
         return is_flying and is_tall
+
+
+class PokemonFavorite(models.Model):
+    """
+    Modelo simple para gestionar Pokémon favoritos generales
+    Sin usuarios - es una aplicación personal de una sola persona
+    """
+    
+    # Relación con el Pokémon (único - no puede haber duplicados)
+    pokemon = models.OneToOneField(Pokemon, on_delete=models.CASCADE, related_name='is_favorite')
+    
+    # Timestamp de cuándo se agregó a favoritos
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']  # Los más recientes primero
+        verbose_name = "Pokémon Favorito"
+        verbose_name_plural = "Pokémon Favoritos"
+    
+    def __str__(self):
+        return f"⭐ {self.pokemon.name.title()}"

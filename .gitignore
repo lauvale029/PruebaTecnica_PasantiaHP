@@ -1,0 +1,29 @@
+
+# GITIGNORE - PROYECTO POKÉDEX HP  
+
+
+#  ARCHIVOS SENSIBLES
+.env
+.env.local
+*.key
+db.sqlite3
+
+#  PYTHON/DJANGO
+__pycache__/
+*.pyc
+*.log
+.venv/
+venv/
+
+#  NODE.JS/REACT
+node_modules/
+dist/
+build/
+.eslintcache
+
+#  SISTEMA
+.DS_Store
+Thumbs.db
+
+#  EDITOR
+.vscode/

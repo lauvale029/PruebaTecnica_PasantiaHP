@@ -1,6 +1,6 @@
-// ========================================
+
 // UTILIDADES PARA MANEJO DE ERRORES
-// ========================================
+
 
 import React from 'react';
 

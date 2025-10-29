@@ -378,7 +378,17 @@ body {
 .pokemon-header {
   display: flex;
   align-items: center;
+  justify-content: flex-start; /* keep content anchored to left */
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.pokemon-favorite {
+  position: absolute;
+  top: 8px;    /* slightly lower so it doesn't collide with header text */
+  right: 12px; /* inset from the card edge */
+  z-index: 10;
 }
 
 .pokemon-image {
@@ -386,7 +396,7 @@ body {
   height: 80px;
   border-radius: 12px;
   background: var(--gray-100);
-  margin-right: 1rem;
+  margin-right: 0.5rem; /* reduced so name sits closer to image */
   object-fit: contain;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -397,11 +407,21 @@ body {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
+.pokemon-info {
+  flex: 1;           /* take remaining space */
+  min-width: 0;      /* allow text truncation */
+  padding-right: 56px; /* make room for the favorite icon on the right */
+}
+
 .pokemon-info h3 {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--gray-800);
   margin-bottom: 0.25rem;
+  margin-right: 0.25rem;
+  overflow: hidden;           /* prevent overlap */
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pokemon-id {

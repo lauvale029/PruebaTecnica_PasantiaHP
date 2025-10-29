@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { FavoriteButton } from './FavoriteButton';
 import type { Pokemon } from '../types/pokemon';
 import { TYPE_TRANSLATIONS } from '../types/pokemon';
 
@@ -52,6 +53,15 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, index }) => {
         <div className="pokemon-info">
           <h3>{pokemon.name || 'Nombre desconocido'}</h3>
           <div className="pokemon-id">{formatId(pokemon.pokemon_id || 0)}</div>
+        </div>
+
+        {/* Botón de Favoritos */}
+        <div className="pokemon-favorite">
+          <FavoriteButton
+            pokemonId={pokemon.pokemon_id || 0}
+            pokemonName={pokemon.name || 'Pokémon'}
+            size="medium"
+          />
         </div>
       </div>
 

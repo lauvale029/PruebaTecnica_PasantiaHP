@@ -4,6 +4,7 @@
 
 import { useState, useCallback } from 'react';
 import { pokemonAPI } from '../services/pokemonAPI';
+import { getFavorites } from '../services/favoritesApi';
 import { FILTER_OPTIONS } from '../types/pokemon';
 import type { Pokemon, LoadingState, FilterOption } from '../types/pokemon';
 
@@ -46,6 +47,21 @@ export const usePokemon = () => {
         case 'flying':
           response = await pokemonAPI.getFlyingTall();
           break;
+        case 'favorites': {
+          // Obtener favoritos y convertir al formato esperado
+          const favorites = await getFavorites();
+          response = {
+            results: favorites.map(fav => ({
+              ...fav.pokemon,
+              id: fav.pokemon.pokemon_id,
+              created_at: fav.created_at,
+              updated_at: fav.created_at
+            })),
+            message: `${favorites.length} Pokémon favoritos encontrados`,
+            count: favorites.length
+          };
+          break;
+        }
         default:
           throw new Error(`Filtro desconocido: ${filter}`);
       }

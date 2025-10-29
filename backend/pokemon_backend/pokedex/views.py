@@ -5,8 +5,13 @@ from rest_framework.response import Response
 from django.db.models import Q
 import requests
 import logging
-from .models import Pokemon
-from .serializers import PokemonSerializer, PokemonBasicSerializer, PokemonLoadStatusSerializer
+from .models import Pokemon, PokemonFavorite
+from .serializers import (
+    PokemonSerializer, 
+    PokemonBasicSerializer, 
+    PokemonLoadStatusSerializer,
+    PokemonFavoriteSerializer
+)
 
 # Configurar logging para debug
 logger = logging.getLogger(__name__)
@@ -210,26 +215,135 @@ class PokemonViewSet(viewsets.ModelViewSet):
                 'total_loaded': 0,
                 'errors': [str(e)]
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
 
-    # ENDPOINT DE ESTADÍSTICAS 
+class PokemonFavoriteViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para gestionar favoritos simples (sin usuarios)
+    Sistema personal - cualquiera puede agregar/quitar favoritos
     
-    @action(detail=False, methods=['get'], url_path='stats')
-    def get_stats(self, request):
+    Endpoints disponibles:
+    - GET /favorites/ : Lista todos los favoritos
+    - POST /favorites/ : Agregar Pokémon a favoritos
+    - DELETE /favorites/{id}/ : Remover de favoritos
+    - POST /favorites/toggle/ : Toggle favorito (agregar/quitar)
+    """
+    
+    queryset = PokemonFavorite.objects.all()
+    serializer_class = PokemonFavoriteSerializer
+    
+    def list(self, request):
         """
-         Estadísticas generales de la Pokédex (bonus para el profesor Oak)
+        Lista todos los Pokémon favoritos
         """
-        total_pokemon = self.queryset.count()
-        weight_filtered = self.queryset.filter(weight__gt=30, weight__lt=80).count()
-        grass_types = self.queryset.filter(types__contains=['grass']).count()
-        flying_tall = self.queryset.filter(types__contains=['flying'], height__gt=10).count()
+        queryset = self.queryset.order_by('-created_at')
+        serializer = self.get_serializer(queryset, many=True)
         
         return Response({
-            'total_pokemon': total_pokemon,
-            'filters_stats': {
-                'weight_30_80_kg': weight_filtered,
-                'grass_type': grass_types,
-                'flying_tall': flying_tall,
-            },
-            'message': ' Estadísticas de la Pokédex del Profesor Oak'
+            'count': queryset.count(),
+            'results': serializer.data,
+            'message': f'{queryset.count()} Pokémon favoritos'
         })
+    
+    def create(self, request):
+        """
+        Agregar un Pokémon a favoritos
+        Requiere: { "pokemon_id": 123 }
+        """
+        serializer = self.get_serializer(data=request.data)
+        
+        if serializer.is_valid():
+            try:
+                favorite = serializer.save()
+                return Response({
+                    'message': f'{favorite.pokemon.name} agregado a favoritos',
+                    'favorite': PokemonFavoriteSerializer(favorite).data
+                }, status=status.HTTP_201_CREATED)
+                
+            except Exception as e:
+                return Response({
+                    'error': f'Error al agregar favorito: {str(e)}'
+                }, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self, request, pk=None):
+        """
+        Remover un Pokémon de favoritos
+        """
+        try:
+            favorite = self.queryset.get(pk=pk)
+            pokemon_name = favorite.pokemon.name
+            favorite.delete()
+            
+            return Response({
+                'message': f'{pokemon_name} removido de favoritos'
+            }, status=status.HTTP_200_OK)
+            
+        except PokemonFavorite.DoesNotExist:
+            return Response({
+                'error': 'Favorito no encontrado'
+            }, status=status.HTTP_404_NOT_FOUND)
+    
+    @action(detail=False, methods=['post'], url_path='toggle')
+    def toggle_favorite(self, request):
+        """
+        Toggle favorito: agregar si no existe, quitar si existe
+        Requiere: { "pokemon_id": 123 }
+        """
+        pokemon_id = request.data.get('pokemon_id')
+        
+        if not pokemon_id:
+            return Response({
+                'error': 'pokemon_id es requerido'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            pokemon = Pokemon.objects.get(pokemon_id=pokemon_id)
+        except Pokemon.DoesNotExist:
+            return Response({
+                'error': f'Pokémon con ID {pokemon_id} no encontrado'
+            }, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            # Intentar encontrar favorito existente
+            favorite = PokemonFavorite.objects.get(pokemon=pokemon)
+            # Si existe, removerlo
+            favorite.delete()
+            
+            return Response({
+                'action': 'removed',
+                'message': f'{pokemon.name} removido de favoritos',
+                'is_favorite': False
+            })
+            
+        except PokemonFavorite.DoesNotExist:
+            # Si no existe, agregarlo
+            favorite = PokemonFavorite.objects.create(pokemon=pokemon)
+            
+            return Response({
+                'action': 'added',
+                'message': f'{pokemon.name} agregado a favoritos',
+                'is_favorite': True,
+                'favorite': PokemonFavoriteSerializer(favorite).data
+            })
+    
+    @action(detail=False, methods=['get'], url_path='check/(?P<pokemon_id>[^/.]+)')
+    def check_favorite(self, request, pokemon_id=None):
+        """
+        Verificar si un Pokémon específico está en favoritos
+        GET /favorites/check/25/ -> Verifica si Pikachu es favorito
+        """
+        try:
+            pokemon = Pokemon.objects.get(pokemon_id=pokemon_id)
+            is_favorite = PokemonFavorite.objects.filter(pokemon=pokemon).exists()
+            
+            return Response({
+                'pokemon_id': int(pokemon_id),
+                'pokemon_name': pokemon.name,
+                'is_favorite': is_favorite
+            })
+            
+        except Pokemon.DoesNotExist:
+            return Response({
+                'error': f'Pokémon con ID {pokemon_id} no encontrado'
+            }, status=status.HTTP_404_NOT_FOUND)

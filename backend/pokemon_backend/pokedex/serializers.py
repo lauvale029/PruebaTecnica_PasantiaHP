@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Pokemon
+from .models import Pokemon, PokemonFavorite
 
 
 class PokemonSerializer(serializers.ModelSerializer):
@@ -98,3 +98,53 @@ class PokemonLoadStatusSerializer(serializers.Serializer):
         child=serializers.CharField(),
         required=False
     )
+
+
+class PokemonFavoriteSerializer(serializers.ModelSerializer):
+    """
+    Serializer para gestionar favoritos simples (sin usuarios)
+    Sistema personal de una sola persona
+    """
+    
+    # Información completa del Pokémon (nested)
+    pokemon = PokemonBasicSerializer(read_only=True)
+    
+    # Campo para recibir solo el ID del Pokémon al crear
+    pokemon_id = serializers.IntegerField(write_only=True)
+    
+    class Meta:
+        model = PokemonFavorite
+        fields = [
+            'id',
+            'pokemon',        # Información completa (lectura)
+            'pokemon_id',     # Solo ID (escritura)
+            'created_at',     # Cuándo se agregó
+        ]
+        read_only_fields = ['id', 'created_at']
+    
+    def create(self, validated_data):
+        """
+        Crear un nuevo favorito
+        - Busca el Pokémon por ID
+        - Crea el favorito (manejando duplicados)
+        """
+        pokemon_id = validated_data['pokemon_id']
+        
+        try:
+            pokemon = Pokemon.objects.get(pokemon_id=pokemon_id)
+        except Pokemon.DoesNotExist:
+            raise serializers.ValidationError({
+                'pokemon_id': f'No se encontró un Pokémon con ID {pokemon_id}'
+            })
+        
+        # Crear o obtener el favorito (evita duplicados)
+        favorite, created = PokemonFavorite.objects.get_or_create(
+            pokemon=pokemon
+        )
+        
+        if not created:
+            raise serializers.ValidationError({
+                'pokemon_id': f'{pokemon.name} ya está en favoritos'
+            })
+        
+        return favorite

@@ -1,0 +1,216 @@
+/* =======================================
+   ESTILOS PARA BOTÓN FAVORITO 3D
+   ======================================= */
+
+.favorite-button-container {
+  position: relative;
+  display: inline-block;
+}
+
+.favorite-button {
+  /* Base styles */
+  background: linear-gradient(135deg, var(--color-100) 0%, var(--color-200) 100%);
+  border: 2px solid var(--color-300);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 3D Effect */
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  
+  /* Layout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  
+  /* Typography */
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  color: var(--color-700);
+  
+  /* Animation */
+  transform: translateY(0);
+}
+
+/* Tamaños */
+.favorite-button.small {
+  padding: 6px 10px;
+  font-size: 12px;
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.favorite-button.medium {
+  padding: 8px 12px;
+  font-size: 14px;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.favorite-button.large {
+  padding: 12px 16px;
+  font-size: 16px;
+  min-width: 52px;
+  min-height: 52px;
+}
+
+/* Estados del botón */
+.favorite-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--color-200) 0%, var(--color-300) 100%);
+  border-color: var(--color-400);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.favorite-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Estado favorito activo */
+.favorite-button.is-favorite {
+  background: linear-gradient(135deg, var(--color-500) 0%, var(--color-600) 100%);
+  border-color: var(--color-700);
+  color: white;
+}
+
+.favorite-button.is-favorite:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--color-600) 0%, var(--color-700) 100%);
+  border-color: var(--color-800);
+}
+
+/* Estado loading */
+.favorite-button.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.favorite-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: translateY(0);
+}
+
+/* Iconos */
+.favorite-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+}
+
+.filled-star {
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+  animation: starGlow 2s ease-in-out infinite alternate;
+}
+
+.empty-star {
+  color: var(--color-500);
+  transition: color 0.3s ease;
+}
+
+.favorite-button:hover .empty-star {
+  color: var(--color-600);
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Texto del favorito */
+.favorite-text {
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+/* Mensaje de feedback */
+.favorite-message {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background: var(--color-800);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  
+  /* 3D effect para el mensaje */
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  /* Flecha */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--color-800);
+  }
+  
+  /* Animación de entrada */
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Animaciones */
+@keyframes starGlow {
+  0% { text-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
+  100% { text-shadow: 0 0 16px rgba(255, 215, 0, 0.8), 0 0 24px rgba(255, 215, 0, 0.3); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .favorite-button.large {
+    padding: 10px 14px;
+    font-size: 14px;
+    min-width: 48px;
+    min-height: 48px;
+  }
+  
+  .favorite-button.medium {
+    padding: 8px 10px;
+    font-size: 13px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  .favorite-message {
+    top: -35px;
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+}

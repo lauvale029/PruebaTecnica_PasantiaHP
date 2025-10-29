@@ -1,5 +1,6 @@
 
 import { usePokemon } from './hooks/usePokemon';
+import { useFavorites } from './hooks/useFavorites';
 import ErrorBoundary from './components/ErrorBoundary';
 import { InitialLoadingScreen } from './components/LoadingSpinner';
 import PokemonGrid from './components/PokemonGrid';
@@ -16,6 +17,8 @@ function App() {
     fetchPokemon,
     resetError
   } = usePokemon();
+
+  const { favorites, favoritesCount } = useFavorites();
 
   // Pantalla de carga inicial
   if (loading.isInitialLoad) {
@@ -165,6 +168,23 @@ function App() {
                     className={`analysis-button ${currentFilter === 'flying' ? 'active' : ''}`}
                   >
                     Ver Pokémon Flying Altos
+                  </button>
+                </div>
+
+                {/* Consulta 5: Favoritos */}
+                <div className="analysis-card">
+                  <div className="analysis-header">
+                    <h3 className="analysis-title">Pokémon Favoritos</h3>
+                    <p className="analysis-description">
+                      Ver todos los Pokémon que has marcado como favoritos ({favoritesCount} total)
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => fetchPokemon('favorites')}
+                    disabled={loading.isLoading}
+                    className={`analysis-button ${currentFilter === 'favorites' ? 'active' : ''}`}
+                  >
+                    Ver Mis Favoritos
                   </button>
                 </div>
               </div>
