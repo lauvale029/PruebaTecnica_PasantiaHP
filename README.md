@@ -1,4 +1,4 @@
-# 🚀 **Pokédx - Prueba Técnica HP**
+# 🚀 **Pokédex - Prueba Técnica HP**
 
 ## 👨‍💻 **Desarrollado por Laura Valentina Pabón Cabezas**
 
@@ -336,18 +336,6 @@ Verifica que ambos servidores estén ejecutándose:
 
 ---
 
-## 🔮 **Futuras Mejoras**
-
-- [ ] Autenticación de usuarios
-- [ ] Búsqueda avanzada con múltiples filtros
-- [ ] Gráficos estadísticos con Chart.js
-- [ ] Cache Redis para mejor rendimiento
-- [ ] Tests automatizados (Jest + pytest)
-- [ ] Deploy en AWS/Azure
-- [ ] PWA (Progressive Web App)
-- [ ] Dark mode
-
----
 
 ## 🙏 **Agradecimientos**
 
