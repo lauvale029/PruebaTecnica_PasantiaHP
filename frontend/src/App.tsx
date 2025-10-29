@@ -176,7 +176,7 @@ function App() {
                   <div className="analysis-header">
                     <h3 className="analysis-title">Pokémon Favoritos</h3>
                     <p className="analysis-description">
-                      Ver todos los Pokémon que has marcado como favoritos ({favoritesCount} total)
+                      Ver todos los Pokémon que has marcado como favoritos 
                     </p>
                   </div>
                   <button
